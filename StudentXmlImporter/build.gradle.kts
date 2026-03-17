@@ -14,7 +14,7 @@ dependencies {
 
     implementation("jakarta.xml.bind:jakarta.xml.bind-api:4.0.0")
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.0")
-    
+
     implementation("org.postgresql:postgresql:42.7.2")
 }
 

@@ -6,6 +6,6 @@ COPY . .
 
 RUN chmod +x gradlew
 
-RUN ./gradlew clean build
+RUN ./gradlew build
 
 CMD ["java", "-jar", "build/libs/StudentXmlImporter-1.0-SNAPSHOT.jar"]

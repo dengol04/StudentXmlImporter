@@ -1,3 +1,6 @@
+package repository
+
+import model.StudentList
 import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.Statement
@@ -8,8 +11,9 @@ class StudentsRepository(
     private val dbPass: String
 ) {
     init {
-        setupTables();
+        setupTables()
     }
+
     private fun getConnection(): Connection = DriverManager.getConnection(jdbcUrl, dbUser, dbPass)
 
     private fun setupTables() {
@@ -22,8 +26,7 @@ class StudentsRepository(
             CREATE TABLE IF NOT EXISTS skills (
                 id SERIAL PRIMARY KEY,
                 skill_name VARCHAR(100) UNIQUE,
-                is_hard BOOLEAN,
-                is_soft BOOLEAN
+                skill_type VARCHAR(10) NOT NULL CHECK (skill_type IN ('HARD', 'SOFT'))
             );
             CREATE TABLE IF NOT EXISTS student_to_skills (
                 student_id INT REFERENCES students(id) ON DELETE CASCADE,
@@ -40,7 +43,7 @@ class StudentsRepository(
     fun saveParsedData(students: StudentList) {
         val insertStudentSql = "INSERT INTO students (first_name, last_name) VALUES (?, ?)"
         val selectSkillSql = "SELECT id FROM skills WHERE skill_name = ?"
-        val insertSkillSql = "INSERT INTO skills (skill_name, is_hard, is_soft) VALUES (?, ?, ?)"
+        val insertSkillSql = "INSERT INTO skills (skill_name, skill_type) VALUES (?, ?)"
         val bindSkillToStudentSql = "INSERT INTO student_to_skills (student_id, skill_id) VALUES (?, ?) ON CONFLICT DO NOTHING"
 
         getConnection().use { connection ->
@@ -55,10 +58,19 @@ class StudentsRepository(
                                 studentStmt.setString(2, student.secondName)
                                 studentStmt.executeUpdate()
 
-                                val studentId = studentStmt.generatedKeys.let { if (it.next()) it.getInt(1) else throw Exception("No ID") }
+                                val studentId = studentStmt.generatedKeys.let {
+                                    if (it.next()) it.getInt(1) else throw Exception("Failed to get student ID")
+                                }
 
                                 for (skill in student.skills) {
                                     var skillId: Int? = null
+
+                                    // Определяем тип навыка на основе Boolean? полей
+                                    val skillType = when {
+                                        skill.hard == true -> "HARD"
+                                        skill.soft == true -> "SOFT"
+                                        else -> null  // если оба null или false — пропускаем
+                                    } ?: continue
 
                                     selectSkillStmt.setString(1, skill.name)
                                     selectSkillStmt.executeQuery().use { rs ->
@@ -69,8 +81,7 @@ class StudentsRepository(
 
                                     if (skillId == null) {
                                         insertSkillStmt.setString(1, skill.name)
-                                        insertSkillStmt.setBoolean(2, skill.hard)
-                                        insertSkillStmt.setBoolean(3, skill.soft)
+                                        insertSkillStmt.setString(2, skillType)
                                         insertSkillStmt.executeUpdate()
 
                                         insertSkillStmt.generatedKeys.use { rs ->
@@ -78,9 +89,10 @@ class StudentsRepository(
                                         }
                                     }
 
-                                    if (skillId != null) {
+                                    val finalSkillId = skillId
+                                    if (finalSkillId != null) {
                                         bindStmt.setInt(1, studentId)
-                                        bindStmt.setInt(2, skillId!!)
+                                        bindStmt.setInt(2, finalSkillId)
                                         bindStmt.addBatch()
                                     }
                                 }

@@ -1,3 +1,5 @@
+package model
+
 import jakarta.xml.bind.annotation.*
 
 @XmlAccessorType(XmlAccessType.FIELD)

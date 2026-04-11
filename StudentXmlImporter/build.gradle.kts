@@ -20,7 +20,7 @@ dependencies {
 }
 
 application {
-    mainClass.set("com.example.MainKt")
+    mainClass.set("MainKt")
 }
 
 tasks.jar {

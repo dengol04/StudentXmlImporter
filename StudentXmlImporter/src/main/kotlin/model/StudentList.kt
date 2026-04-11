@@ -10,4 +10,6 @@ import jakarta.xml.bind.annotation.XmlRootElement
 data class StudentList(
     @field:XmlElement(name = "student")
     var students: MutableList<Student> = mutableListOf()
-) : JaxbSerializable
+) : JaxbSerializable {
+    override fun toString(): String = students.joinToString("\n")
+}

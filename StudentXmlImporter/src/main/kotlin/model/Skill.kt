@@ -15,4 +15,10 @@ data class Skill(
 
     @field:XmlValue
     var name: String = ""
-)
+) {
+    override fun toString(): String = when {
+        hard == true -> "$name (hard)"
+        soft == true -> "$name (soft)"
+        else -> name
+    }
+}

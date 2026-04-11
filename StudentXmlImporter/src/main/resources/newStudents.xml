@@ -8,7 +8,7 @@
             <skill hard="true">Kotlin</skill>
             <skill hard="true">DevSecOps</skill>
             <skill soft="true">English language</skill>
-            <skill soft="true">Analytical thinking</skill>
+            <skill hard="true">Docker</skill>
         </skills>
     </student>
     <student>
@@ -17,7 +17,7 @@
         <skills>
             <skill hard="true">PHP</skill>
             <skill hard="true">Backend</skill>
-            <skill hard="true">Docker</skill>
+            <skill soft="true">Analytical thinking</skill>
         </skills>
     </student>
     <student>

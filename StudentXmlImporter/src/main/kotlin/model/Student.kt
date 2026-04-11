@@ -13,4 +13,8 @@ data class Student(
     @field:XmlElementWrapper(name = "skills")
     @field:XmlElement(name = "skill")
     var skills: MutableList<Skill> = mutableListOf()
-)
+) {
+    override fun toString(): String {
+        return "$firstName $secondName, skills: " + skills.joinToString(", ")
+    }
+}

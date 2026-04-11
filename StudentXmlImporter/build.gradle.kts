@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "1.9.22"
+    application
 }
 //
 //group = "org.example"
@@ -16,6 +17,19 @@ dependencies {
     implementation("org.glassfish.jaxb:jaxb-runtime:4.0.0")
 
     implementation("org.postgresql:postgresql:42.7.2")
+}
+
+application {
+    mainClass.set("com.example.MainKt")
+}
+
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = application.mainClass.get()
+    }
+
+    from(configurations.runtimeClasspath.get().map { if (it.isDirectory) it else zipTree(it) })
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 tasks.test {

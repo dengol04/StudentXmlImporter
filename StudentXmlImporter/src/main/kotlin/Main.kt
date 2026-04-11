@@ -7,7 +7,7 @@ import java.io.File
 
 fun main() {
     val inputStream = object {}.javaClass.getResourceAsStream("/students.xml")
-        ?: error("/students.xml не найден в папке resources")
+        ?: error("/students.xml not found in resources folder")
 
     val students: StudentList = inputStream.unmarshalXml()
 
@@ -36,5 +36,4 @@ fun main() {
     val rep = StudentsRepository(jdbcUrl, dbUser, dbPassword)
 
     rep.saveParsedData(students)
-
 }

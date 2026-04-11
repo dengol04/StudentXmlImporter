@@ -65,11 +65,10 @@ class StudentsRepository(
                                 for (skill in student.skills) {
                                     var skillId: Int? = null
 
-                                    // Определяем тип навыка на основе Boolean? полей
                                     val skillType = when {
                                         skill.hard == true -> "HARD"
                                         skill.soft == true -> "SOFT"
-                                        else -> null  // если оба null или false — пропускаем
+                                        else -> null
                                     } ?: continue
 
                                     selectSkillStmt.setString(1, skill.name)
